@@ -1,0 +1,17 @@
+{
+  "name": "object-manipulation",
+  "version": "1.0.1",
+  "description": "nodejs object manipulation library",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "object",
+    "manipulation",
+    "library"
+  ],
+  "repository": "https://github.com/Hobgoblin101/object-manipulation",
+  "author": "Ajani James Bilby",
+  "license": "ISC"
+}
