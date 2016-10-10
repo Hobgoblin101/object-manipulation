@@ -1,6 +1,6 @@
 {
   "name": "object-manipulation",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "nodejs object manipulation library",
   "main": "index.js",
   "scripts": {
