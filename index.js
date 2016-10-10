@@ -1,6 +1,6 @@
-ObjectManager = function(){};
+class ObjectManager{}
 
-ObjectManager.prototype.getDiffList = function(obj1, obj2, skipableRecursive){
+ObjectManager.getDiffList = function(obj1, obj2, skipableRecursive){
   if (this.isFunction(obj1) || this.isFunction(obj2)){
     throw 'Invalid argument. Function given, object expected.';
   }
@@ -99,7 +99,7 @@ ObjectManager.prototype.getDiffList = function(obj1, obj2, skipableRecursive){
   return diff;
 };
 
-ObjectManager.prototype.passNew = function(obj1, obj2, skipableRecursive){
+ObjectManager.passNew = function(obj1, obj2, skipableRecursive){
   var diff = this.getDiffList(obj1, obj2, skipableRecursive);
 
   var output = {};
@@ -128,7 +128,7 @@ ObjectManager.prototype.passNew = function(obj1, obj2, skipableRecursive){
   return output;
 };
 
-ObjectManager.prototype.compareValues = function(original, current){
+ObjectManager.compareValues = function(original, current){
   //Equal?
   if (original == current){
     return 'equal';
@@ -149,19 +149,19 @@ ObjectManager.prototype.compareValues = function(original, current){
   return 'equal';
 };
 
-ObjectManager.prototype.isFunction = function(obj){
+ObjectManager.isFunction = function(obj){
   return {}.toString.apply(obj) === '[object Function]';
 };
 
-ObjectManager.prototype.isObject = function(obj){
+ObjectManager.isObject = function(obj){
   return {}.toString.apply(obj) === '[object Object]';
 };
 
-ObjectManager.prototype.isArray = function(obj){
+ObjectManager.isArray = function(obj){
   return {}.toString.apply(obj) === '[object Array]';
 };
 
-ObjectManager.prototype.isValue  = function(obj){
+ObjectManager.isValue  = function(obj){
   return !this.isObject(obj) && !this.isArray(obj);
 };
 
@@ -188,4 +188,22 @@ ObjectManager.merg = function (obj1, obj2, recursive = true){
   return obj1;
 };
 
-module.exports = new ObjectManager();
+ObjectManager.firstUndefined = function(array = [], overflow = 1000){
+  if (this.isArray(array)){
+    let index = 0;
+    while(index < overflow){
+      if (typeof(array[index]) == "undefined"){
+        return index;
+      }else{
+        index += 1;
+      }
+    }
+
+    console.error('***ERROR: Killing Process due to not finding empty index after 1000');
+
+    return -1;
+  }else{
+    console.error("***ERROR: Array Invalid Input");
+    return -1;
+  }
+};
