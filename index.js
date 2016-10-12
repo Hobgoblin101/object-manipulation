@@ -199,7 +199,7 @@ ObjectManager.firstUndefined = function(array = [], overflow = 1000){
       }
     }
 
-    console.error('***ERROR: Killing Process due to not finding empty index after 1000');
+    console.error('***ERROR: Killing Process due to not finding empty index after 1000\nRecommend expanding overflow object-manipulation.firstUndefined(array, overflow)');
 
     return -1;
   }else{
@@ -207,3 +207,5 @@ ObjectManager.firstUndefined = function(array = [], overflow = 1000){
     return -1;
   }
 };
+
+module.exports = ObjectManager;
