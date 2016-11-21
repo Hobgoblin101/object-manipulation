@@ -1,6 +1,6 @@
 class ObjectManager{}
 
-ObjectManager.getDiffList = function(obj1, obj2, skipableRecursive){
+ObjectManager.prototype.getDiffList = function(obj1, obj2, skipableRecursive){
   if (this.isFunction(obj1) || this.isFunction(obj2)){
     throw 'Invalid argument. Function given, object expected.';
   }
@@ -99,7 +99,7 @@ ObjectManager.getDiffList = function(obj1, obj2, skipableRecursive){
   return diff;
 };
 
-ObjectManager.passNew = function(obj1, obj2, skipableRecursive){
+ObjectManager.prototype.passNew = function(obj1, obj2, skipableRecursive){
   var diff = this.getDiffList(obj1, obj2, skipableRecursive);
 
   var output = {};
@@ -128,7 +128,7 @@ ObjectManager.passNew = function(obj1, obj2, skipableRecursive){
   return output;
 };
 
-ObjectManager.compareValues = function(original, current){
+ObjectManager.prototype.compareValues = function(original, current){
   //Equal?
   if (original == current){
     return 'equal';
@@ -149,23 +149,23 @@ ObjectManager.compareValues = function(original, current){
   return 'equal';
 };
 
-ObjectManager.isFunction = function(obj){
+ObjectManager.prototype.isFunction = function(obj){
   return {}.toString.apply(obj) === '[object Function]';
 };
 
-ObjectManager.isObject = function(obj){
+ObjectManager.prototype.isObject = function(obj){
   return {}.toString.apply(obj) === '[object Object]';
 };
 
-ObjectManager.isArray = function(obj){
+ObjectManager.prototype.isArray = function(obj){
   return {}.toString.apply(obj) === '[object Array]';
 };
 
-ObjectManager.isValue  = function(obj){
+ObjectManager.prototype.isValue  = function(obj){
   return !this.isObject(obj) && !this.isArray(obj);
 };
 
-ObjectManager.merg = function (obj1, obj2, recursive = true){
+ObjectManager.prototype.merg = function (obj1, obj2, recursive = true){
   if (typeof(obj1) != "object"){
     obj1 = {};
   }
@@ -188,7 +188,7 @@ ObjectManager.merg = function (obj1, obj2, recursive = true){
   return obj1;
 };
 
-ObjectManager.firstUndefined = function(array = [], overflow = 1000){
+ObjectManager.prototype.firstUndefined = function(array = [], overflow = 1000){
   if (this.isArray(array)){
     let index = 0;
     while(index < overflow){
@@ -208,4 +208,4 @@ ObjectManager.firstUndefined = function(array = [], overflow = 1000){
   }
 };
 
-module.exports = ObjectManager;
+module.exports = new ObjectManager();
