@@ -1,6 +1,7 @@
 class ObjectManager{}
 
-ObjectManager.prototype.getDiffList = function(obj1, obj2, skipableRecursive){
+ObjectManager.getDiffList = function(obj1, obj2){
+
   if (this.isFunction(obj1) || this.isFunction(obj2)){
     throw 'Invalid argument. Function given, object expected.';
   }
@@ -11,96 +12,49 @@ ObjectManager.prototype.getDiffList = function(obj1, obj2, skipableRecursive){
   var diff = {};
 
   for (let key in obj1){
-    if (this.isValue(obj1)){
+    if (this.isValue(obj1[key])){
       diff[key] = this.compareValues(obj1[key], obj2[key]);
     }else{
-      //if it is an array or object
-      if (!this.isValue(obj2[key])){
-        //if they are both objects/arrays
-        diff[key] = this.getDiffList(obj1[key], obj2[key]);
-      }else if (this.isObject(obj1[key])){
-        if (this.isObject(obj2[key])){
-          if (skipableRecursive){
-            //Check if the two objects are completely the same
-            if (JSON.stringify(obj1[key]) == JSON.stringify(obj1[key])){
-              //if so then that part is equal
-              diff[key] = "equal";
-              continue;
-            }
-          }else{
-            diff[key] = this.getDiffList(obj1[key], obj2[key], skipableRecursive);
-            continue;
-          }
+      if (this.isObject(obj2[key]) || this.isArray(obj2[key])){
+        if (JSON.stringify(obj1[key]) == JSON.stringify(obj2[key])){
+          diff[key] = 'equal';
         }else{
-          if (skipableRecursive){
-            diff[key] = "updated";
-            continue;
-          }else{
-            diff[key] = this.getDiffList(obj1[key], obj2[key], skipableRecursive);
-            continue;
-          }
+          diff[key] = this.getDiffList(obj1[key], obj2[key]);
         }
       }else{
-        if (skipableRecursive){
-          diff[key] = "updated";
-          continue;
-        }else{
-          diff[key] = this.getDiffList(obj1[key], obj2[key], skipableRecursive);
-          continue;
-        }
+        diff[key] = this.compareValues(obj1[key], obj2[key]);
       }
     }
-    continue;
   }
 
   for (let key in obj2){
-    if (this.isValue(obj2)){
-      diff[key] = this.compareValues(obj2[key], obj1[key]);
+    if (typeof(diff[key]) == 'string'){
+      continue;
+    }
+
+    if (this.isValue(obj1[key])){
+      diff[key] = this.compareValues(obj1[key], obj2[key]);
     }else{
-      //if it is an array or object
-      if (!this.isValue(obj1[key])){
-        //if they are both objects/arrays
-        diff[key] = this.getDiffList(obj2[key], obj1[key]);
-      }else if (this.isObject(obj2[key])){
-        if (this.isObject(obj1[key])){
-          if (skipableRecursive){
-            //Check if the two objects are completely the same
-            if (JSON.stringify(obj2[key]) == JSON.stringify(obj2[key])){
-              //if so then that part is equal
-              diff[key] = "equal";
-              continue;
-            }
-          }else{
-            diff[key] = this.getDiffList(obj2[key], obj1[key], skipableRecursive);
-            continue;
-          }
+      if (this.isObject(obj2[key]) || this.isArray(obj2[key])){
+        if (JSON.stringify(obj1[key]) == JSON.stringify(obj2[key])){
+          diff[key] = 'equal';
         }else{
-          if (skipableRecursive){
-            diff[key] = "updated";
-            continue;
-          }else{
-            diff[key] = this.getDiffList(obj2[key], obj1[key], skipableRecursive);
-            continue;
-          }
+          diff[key] = this.getDiffList(obj1[key], obj2[key]);
         }
       }else{
-        if (skipableRecursive){
-          diff[key] = "updated";
-          continue;
-        }else{
-          diff[key] = this.getDiffList(obj2[key], obj1[key], skipableRecursive);
-          continue;
-        }
+        diff[key] = this.compareValues(obj1[key], obj2[key]);
       }
     }
-    continue;
   }
 
   return diff;
 };
 
-ObjectManager.prototype.passNew = function(obj1, obj2, skipableRecursive){
-  var diff = this.getDiffList(obj1, obj2, skipableRecursive);
+ObjectManager.passNew = function(obj1, obj2){
+  console.log('1', obj1);
+  console.log('2', obj2);
+  var diff = this.getDiffList(obj1, obj2);
+  console.log('diff', diff);
 
   var output = {};
 
@@ -120,7 +74,7 @@ ObjectManager.prototype.passNew = function(obj1, obj2, skipableRecursive){
       default:
         //Is array or object?
         if (!this.isValue(diff[key])){
-          output[key] = this.passNew(obj1[key], obj2[key], skipableRecursive);
+          output[key] = this.passNew(obj1[key], obj2[key]);
         }
     }
   }
@@ -128,9 +82,9 @@ ObjectManager.prototype.passNew = function(obj1, obj2, skipableRecursive){
   return output;
 };
 
-ObjectManager.prototype.compareValues = function(original, current){
+ObjectManager.compareValues = function(original, current){
   //Equal?
-  if (original == current){
+  if (original === current){
     return 'equal';
   }
   //Has the item added?
@@ -149,23 +103,23 @@ ObjectManager.prototype.compareValues = function(original, current){
   return 'equal';
 };
 
-ObjectManager.prototype.isFunction = function(obj){
+ObjectManager.isFunction = function(obj){
   return {}.toString.apply(obj) === '[object Function]';
 };
 
-ObjectManager.prototype.isObject = function(obj){
+ObjectManager.isObject = function(obj){
   return {}.toString.apply(obj) === '[object Object]';
 };
 
-ObjectManager.prototype.isArray = function(obj){
+ObjectManager.isArray = function(obj){
   return {}.toString.apply(obj) === '[object Array]';
 };
 
-ObjectManager.prototype.isValue  = function(obj){
+ObjectManager.isValue  = function(obj){
   return !this.isObject(obj) && !this.isArray(obj);
 };
 
-ObjectManager.prototype.merg = function (obj1, obj2, recursive = true){
+ObjectManager.merg = function (obj1, obj2, recursive = true){
   if (typeof(obj1) != "object"){
     obj1 = {};
   }
@@ -188,7 +142,7 @@ ObjectManager.prototype.merg = function (obj1, obj2, recursive = true){
   return obj1;
 };
 
-ObjectManager.prototype.firstUndefined = function(array = [], overflow = 1000){
+ObjectManager.firstUndefined = function(array = [], overflow = 1000){
   if (this.isArray(array)){
     let index = 0;
     while(index < overflow){
@@ -208,4 +162,4 @@ ObjectManager.prototype.firstUndefined = function(array = [], overflow = 1000){
   }
 };
 
-module.exports = new ObjectManager();
+module.exports = ObjectManager;
