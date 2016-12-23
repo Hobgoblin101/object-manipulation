@@ -51,10 +51,7 @@ ObjectManager.getDiffList = function(obj1, obj2){
 };
 
 ObjectManager.passNew = function(obj1, obj2){
-  console.log('1', obj1);
-  console.log('2', obj2);
   var diff = this.getDiffList(obj1, obj2);
-  console.log('diff', diff);
 
   var output = {};
 
@@ -119,7 +116,7 @@ ObjectManager.isValue  = function(obj){
   return !this.isObject(obj) && !this.isArray(obj);
 };
 
-ObjectManager.merg = function (obj1, obj2, recursive = true){
+ObjectManager.merge = function (obj1, obj2, recursive = true){
   if (typeof(obj1) != "object"){
     obj1 = {};
   }
@@ -129,7 +126,7 @@ ObjectManager.merg = function (obj1, obj2, recursive = true){
   for (var attrname in obj2){
     if (recursive){
       if (typeof(obj2[attrname]) == 'object' && typeof(obj1[attrname])){
-        obj1[attrname] = module.exports.merg(obj1[attrname], obj2[attrname]);
+        obj1[attrname] = module.exports.merge(obj1[attrname], obj2[attrname]);
       }else{
         if (typeof(obj2[attrname]) != 'undefined'){
           obj1[attrname] = obj2[attrname];
@@ -161,5 +158,26 @@ ObjectManager.firstUndefined = function(array = [], overflow = 1000){
     return -1;
   }
 };
+
+ObjectManager.indexesOf = function(string, search){
+  var lastIndex = 0;
+  var indexes = [];
+  var searching = true;
+
+  var loopNum = 0;
+
+  while (loopNum<string.length) {
+    var index = string.substr(lastIndex, string.length).indexOf(search);
+    if (index == -1){
+      loopNum = string.length;
+    }else{
+      lastIndex += index+1;
+      indexes.push(lastIndex-1);
+    }
+    loopNum += 1;
+  }
+
+  return indexes;
+}
 
 module.exports = ObjectManager;

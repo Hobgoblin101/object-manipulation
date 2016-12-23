@@ -1,8 +1,9 @@
 A quick and easy object manipulation library.
 
 
-##ObjectManager.getDiffList(obj1, obj2, skipableRecursive)  
+# Object manipulators / interpreters
 
+## getDiffList(obj1, obj2, skipableRecursive)  
 obj1, and obj2, must be objects  
 skipableRecursive must be either a boolean or undefined
 
@@ -11,29 +12,32 @@ skipableRecursive will stop the function from looping down into another layer
 if there is an object with an object.  
 
 
-##ObjectManager.passNew(obj1, obj2, skipableRecursive)  
-
+## passNew(obj1, obj2, skipableRecursive)  
 Similar to getDiffList, but it will pass a object of which is only the new items
 
 
-##ObjectManager.merg(obj1, obj2, recursive)  
-
-Will run though the two objects and merg objects 1 & 2 with 2 overwriting  
+## merge(obj1, obj2, recursive)  
+Will run though the two objects and merge objects 1 & 2 with 2 overwriting  
 object 1 where necessary.  
 recursive is default true
 
+## firstUndefined(array)
+This will return the first undefined value's index within an array
 
+## indexesOf(stirng, search)
+This will return an array of all indexes of the search term within the string
 
-##ObjectManager.isFunction(item)  
+___
 
+# Other functions
+
+## isFunction(item)  
 Will parse a boolean on whether item is a function or not
 
 
-##ObjectManager.isObject(item)  
-
+## isObject(item)  
 Will parse a boolean on whether item is a object {} or not
 
 
-##ObjectManager.isArray(item)  
-
+## isArray(item)  
 Will parse a boolean on whether item is a array [] or not
