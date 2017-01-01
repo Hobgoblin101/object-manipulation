@@ -1,7 +1,6 @@
 class ObjectManager{}
 
 ObjectManager.getDiffList = function(obj1, obj2){
-
   if (this.isFunction(obj1) || this.isFunction(obj2)){
     throw 'Invalid argument. Function given, object expected.';
   }
@@ -11,38 +10,25 @@ ObjectManager.getDiffList = function(obj1, obj2){
 
   var diff = {};
 
-  for (let key in obj1){
-    if (this.isValue(obj1[key])){
-      diff[key] = this.compareValues(obj1[key], obj2[key]);
-    }else{
-      if (this.isObject(obj2[key]) || this.isArray(obj2[key])){
-        if (JSON.stringify(obj1[key]) == JSON.stringify(obj2[key])){
-          diff[key] = 'equal';
-        }else{
-          diff[key] = this.getDiffList(obj1[key], obj2[key]);
-        }
-      }else{
-        diff[key] = this.compareValues(obj1[key], obj2[key]);
-      }
+  var keyList = Object.keys(obj1);
+  for (let key in obj2){
+    if (keyList.indexOf(key) == -1){
+      keyList.push(key);
     }
   }
 
-  for (let key in obj2){
-    if (typeof(diff[key]) == 'string'){
-      continue;
-    }
-
+  for (let key of keyList){
     if (this.isValue(obj1[key])){
-      diff[key] = this.compareValues(obj1[key], obj2[key]);
-    }else{
-      if (this.isObject(obj2[key]) || this.isArray(obj2[key])){
-        if (JSON.stringify(obj1[key]) == JSON.stringify(obj2[key])){
-          diff[key] = 'equal';
-        }else{
-          diff[key] = this.getDiffList(obj1[key], obj2[key]);
-        }
-      }else{
+      if (this.isValue(obj2[key])){
         diff[key] = this.compareValues(obj1[key], obj2[key]);
+      }else{
+        diff[key] = 'new';
+      }
+    }else{
+      if (this.isValue(obj2[key])){
+        diff[key] = 'new';
+      }else{
+        diff[key] = this.getDiffList(obj1[key], obj2[key]);
       }
     }
   }
@@ -85,11 +71,11 @@ ObjectManager.compareValues = function(original, current){
     return 'equal';
   }
   //Has the item added?
-  if (typeof(original) == 'undefined' && typeof(current) != 'undefined'){
+  if (original === undefined && current !== undefined){
     return 'new';
   }
   //Has the item been removed?
-  if (typeof(current) == 'undefined' && typeof(original) != 'undefined'){
+  if (original !== undefined && current === undefined){
     return 'deleted';
   }
   //Changed?
@@ -117,25 +103,20 @@ ObjectManager.isValue  = function(obj){
 };
 
 ObjectManager.merge = function (obj1, obj2, recursive = true){
-  if (typeof(obj1) != "object"){
-    obj1 = {};
+  if ( this.isValue(obj1) || this.isValue(obj2) ){
+    return obj2;
   }
-  if (typeof(obj2) != "object"){
-    obj2 = {};
-  }
+
   for (var attrname in obj2){
-    if (recursive){
-      if (typeof(obj2[attrname]) == 'object' && typeof(obj1[attrname])){
-        obj1[attrname] = module.exports.merge(obj1[attrname], obj2[attrname]);
-      }else{
-        if (typeof(obj2[attrname]) != 'undefined'){
-          obj1[attrname] = obj2[attrname];
-        }
+    if (!this.isValue(obj2[attrname])){
+      if (!this.isValue(obj1[attrname])){
+        obj1[attrname] = this.merge(obj1[attrname], obj2[attrname]);
+        continue;
       }
-    }else{
-      obj1[attrname] = obj2[attrname];
     }
+    obj1[attrname] = obj2[attrname];
   }
+
   return obj1;
 };
 
