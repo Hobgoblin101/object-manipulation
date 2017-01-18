@@ -21,6 +21,13 @@ Will run though the two objects and merge objects 1 & 2 with 2 overwriting
 object 1 where necessary.  
 recursive is default true
 
+## appendArray(firstArray, secondArray)
+Will return an array with the content starting with input one and ending with input two.
+**Example**: ```ob.appendArray([1,2], [3,4]) //Will return [1,2,3,4]```
+
+## appendBuffer(firstBuffer, secondBuffer)
+This will do a similar task to appendArray, but with buffers.
+
 ## firstUndefined(array)
 This will return the first undefined value's index within an array
 

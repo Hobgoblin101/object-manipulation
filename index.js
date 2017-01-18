@@ -35,7 +35,6 @@ ObjectManager.getDiffList = function(obj1, obj2){
 
   return diff;
 };
-
 ObjectManager.passNew = function(obj1, obj2){
   var diff = this.getDiffList(obj1, obj2);
 
@@ -64,7 +63,6 @@ ObjectManager.passNew = function(obj1, obj2){
 
   return output;
 };
-
 ObjectManager.compareValues = function(original, current){
   //Equal?
   if (original === current){
@@ -85,19 +83,15 @@ ObjectManager.compareValues = function(original, current){
   //else
   return 'equal';
 };
-
 ObjectManager.isFunction = function(obj){
   return {}.toString.apply(obj) === '[object Function]';
 };
-
 ObjectManager.isObject = function(obj){
   return {}.toString.apply(obj) === '[object Object]';
 };
-
 ObjectManager.isArray = function(obj){
   return {}.toString.apply(obj) === '[object Array]';
 };
-
 ObjectManager.isValue  = function(obj){
   return !this.isObject(obj) && !this.isArray(obj);
 };
@@ -118,6 +112,50 @@ ObjectManager.merge = function (obj1, obj2, recursive = true){
   }
 
   return obj1;
+};
+
+ObjectManager.appendArray = function(firstArray, secondArray){
+  var a = new Array(a);
+
+  for (let item of secondArray){
+    a.push(item);
+  }
+
+  return a;
+};
+
+ObjectManager.appendBuffer = function(firstBuffer, secondBuffer){
+  var a = JSON.parse(JSON.stringify(firstBuffer)).data;
+  var b = JSON.parse(JSON.stringify(secondBuffer)).data;
+  for (let item of b){
+    a.push(item);
+  }
+
+  return new Buffer(a);
+};
+
+ObjectManager.indexOf = function(key, string){
+
+  for (let i=0; i<string.length-(key.length-1); i++){
+    var indexFail = false;
+
+    for (let j=0; j<key.length; j++){
+
+      if (indexFail){
+        continue;
+      }
+
+      if (key[j] != string[i+j]){
+        indexFail = true;
+      }
+    }
+
+    if (!indexFail){
+      return i;
+    }
+  }
+
+  return -1;
 };
 
 ObjectManager.firstUndefined = function(array = [], overflow = 1000){
