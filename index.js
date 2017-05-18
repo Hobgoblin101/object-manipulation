@@ -158,6 +158,15 @@ ObjectManager.indexOf = function(key, string){
   return -1;
 };
 
+ObjectManager.strToChars = function(string){
+  var output = [];
+  for (let i=0; i<string.length; i++){
+    output[i] = string.charCodeAt(i);
+  }
+
+  return output;
+};
+
 ObjectManager.firstUndefined = function(array = [], overflow = 1000){
   if (this.isArray(array)){
     let index = 0;
